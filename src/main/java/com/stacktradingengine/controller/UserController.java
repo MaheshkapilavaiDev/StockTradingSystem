@@ -2,9 +2,11 @@ package com.stacktradingengine.controller;
 
 import java.util.List;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import com.stacktradingengine.dto.UserRequestDTO;
+import com.stacktradingengine.dto.UserResponseDTO;
 import com.stacktradingengine.entity.User;
 import com.stacktradingengine.service.UserService;
 
@@ -20,12 +22,13 @@ public class UserController {
 		this.service = service;
 	}
 
-	@PostMapping("/rigister")
-	public User register(@RequestBody UserRequestDTO dto) {
+	@PostMapping("/register")
+	public UserResponseDTO register(@RequestBody UserRequestDTO dto) {
 
 		return service.register(dto);
 	}
 
+	@PreAuthorize("hasRole('ADMIN')")
 	@GetMapping("/getAllUsers")
 	public List<User> getAll() {
 

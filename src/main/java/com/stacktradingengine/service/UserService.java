@@ -6,6 +6,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.stacktradingengine.dto.UserRequestDTO;
+import com.stacktradingengine.dto.UserResponseDTO;
 import com.stacktradingengine.entity.User;
 import com.stacktradingengine.enums.Role;
 import com.stacktradingengine.repository.UserRepository;
@@ -22,7 +23,7 @@ public class UserService {
 		this.encoder = encoder;
 	}
 
-	public User register(UserRequestDTO dto) {
+	public UserResponseDTO register(UserRequestDTO dto) {
 
 		User user = new User();
 
@@ -34,8 +35,21 @@ public class UserService {
 
 		user.setRole(Role.USER);
 
-		return repository.save(user);
-	}
+		User savedUser = repository.save(user);
+
+        UserResponseDTO response =
+                new UserResponseDTO();
+
+        response.setId(savedUser.getId());
+        response.setName(savedUser.getName());
+        response.setEmail(savedUser.getEmail());
+        response.setBalance(savedUser.getBalance());
+        response.setRole(
+                savedUser.getRole().name()
+        );
+
+        return response;
+    }
 
 	public List<User> getAll() {
 

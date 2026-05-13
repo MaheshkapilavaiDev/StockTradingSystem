@@ -12,6 +12,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 
 import org.springframework.security.config.http.SessionCreationPolicy;
 
+import org.springframework.http.HttpMethod;
+
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -45,7 +47,23 @@ public class SecurityConfig {
 
 				.authorizeHttpRequests(auth -> auth
 
-						.requestMatchers("/auth/**", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
+						.requestMatchers("/auth/**", "/users/register","/swagger-ui/**", "/v3/api-docs/**").permitAll()
+						
+						.requestMatchers(
+		                        HttpMethod.GET,
+		                        "/stocks/**",
+		                        "/orders/orderbook/**",
+		                        "/trades/stock/**"
+		                ).permitAll()
+						
+						.requestMatchers(
+		                        HttpMethod.POST,
+		                        "/stocks/**"
+		                ).hasRole("ADMIN")
+
+		                // ALL ORDER APIs REQUIRE LOGIN
+		                .requestMatchers("/orders/**")
+		                .authenticated()
 
 						.anyRequest().authenticated())
 
