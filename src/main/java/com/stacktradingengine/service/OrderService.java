@@ -41,7 +41,7 @@ public class OrderService {
     }
 
     @Transactional
-    public Order placeBuyOrder(OrderRequestDTO dto) {
+    public OrderResponseDTO placeBuyOrder(OrderRequestDTO dto) {
 
         User user = userRepository.findById(dto.getUserId())
                 .orElseThrow(() ->
@@ -70,11 +70,11 @@ public class OrderService {
 
         matchBuyOrder(buyOrder);
 
-        return buyOrder;
+        return mapToDTO(buyOrder);
     }
 
     @Transactional
-    public Order placeSellOrder(OrderRequestDTO dto) {
+    public OrderResponseDTO placeSellOrder(OrderRequestDTO dto) {
 
         User user = userRepository.findById(dto.getUserId())
                 .orElseThrow(() ->
@@ -103,7 +103,7 @@ public class OrderService {
 
         matchSellOrder(sellOrder);
 
-        return sellOrder;
+        return mapToDTO(sellOrder);
     }
 
     @Transactional
@@ -239,9 +239,10 @@ public class OrderService {
         }
     }
 
-    public List<Order> userOrders(Long userId) {
+    public List<OrderResponseDTO> userOrders(Long userId) {
 
-        return orderRepository.findByUserId(userId);
+        return orderRepository.findByUserId(userId)
+        		.stream().map(this::mapToDTO).toList();
     }
 
     public void cancel(Long id) {
